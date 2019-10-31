@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Abastecimento</string>
+
+    <string-array name="opcoes_posto">
+        <item>Texaco</item>
+        <item>Shell</item>
+        <item>Petrobras</item>
+        <item>Ipiranga</item>
+        <item>Outros</item>
+    </string-array>
+</resources>
