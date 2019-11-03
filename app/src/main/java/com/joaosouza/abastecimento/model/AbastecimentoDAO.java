@@ -1,6 +1,6 @@
 package com.joaosouza.abastecimento.model;
 
-import com.joaosouza.abastecimento.Abastecimento;
+import com.joaosouza.abastecimento.Formulario;
 
 import java.util.ArrayList;
 

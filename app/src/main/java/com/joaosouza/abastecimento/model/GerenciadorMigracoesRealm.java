@@ -21,7 +21,7 @@ public class GerenciadorMigracoesRealm implements RealmMigration {
     private void passoDeMigracao(DynamicRealm realm, long versaoVelha, long versaoNova){
         if(versaoVelha == 0 && versaoNova == 1){
             RealmSchema schema = realm.getSchema();
-            RealmObjectSchema abastecimentoSchema = schema.get("Abastecimento");
+            RealmObjectSchema abastecimentoSchema = schema.get("Formulario");
             abastecimentoSchema.addField( "caminhoFotografia", String.class );
         }
     }

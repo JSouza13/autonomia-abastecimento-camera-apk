@@ -32,7 +32,7 @@ public class Abastecimentos extends AppCompatActivity {
     }
 
     public void editaAbastecimento(View v, String abastecimentoId){
-        Intent intencao= new Intent(this, Abastecimento.class);
+        Intent intencao= new Intent(this, Abastecimentos.class);
         intencao.putExtra("abastecimentoId", abastecimentoId);
         startActivityForResult(intencao, 1);
     }
@@ -60,7 +60,7 @@ public class Abastecimentos extends AppCompatActivity {
         }
     }
     public void adicionarAbastecimento(View v){
-        Intent intencao = new Intent(this, Abastecimento.class);
+        Intent intencao = new Intent(this, Abastecimentos.class);
         startActivityForResult(intencao, 1);
     }
 }

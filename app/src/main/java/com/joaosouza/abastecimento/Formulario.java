@@ -1,5 +1,7 @@
 package com.joaosouza.abastecimento;
 
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
@@ -11,7 +13,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -21,8 +24,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.joaosouza.abastecimento.model.AbastecimentoDAO;
 import com.joaosouza.abastecimento.model.AbastecimentoModel;
+import com.joaosouza.abastecimento.model.AbastecimentoDAO;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.File;
@@ -33,25 +36,27 @@ import java.util.UUID;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
 
+public class Formulario extends AppCompatActivity  {
 
-public class Abastecimento extends AppCompatActivity {
-    private AbastecimentoModel abastecimento;
+    private AbastecimentoModel objetoAbastecimento;
     private String idDoAbastecimento;
     private EditText editKm;
     private EditText editLitros;
-    private EditText editData;
+    private TextInputEditText etData;
     private Spinner postos;
+
+    private MaterialSpinner spPrioridade;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_abastecimento);
+        setContentView(R.layout.activity_formulario);
 
         editKm = findViewById(R.id.editKM);
         editLitros = findViewById(R.id.editLitros);
-        editData = findViewById(R.id.editData);
+        etData = findViewById(R.id.etData);
         postos = findViewById(R.id.spPostos);
-        editData.setKeyListener(null);
+        etData.setKeyListener(null);
 
         String[] opcoesPostos = getResources().getStringArray(R.array.opcoes_posto);
 
@@ -61,52 +66,51 @@ public class Abastecimento extends AppCompatActivity {
 
         idDoAbastecimento = getIntent().getStringExtra("abastecimentoId");
         if(idDoAbastecimento == null){
-            abastecimento = new AbastecimentoModel();
+            objetoAbastecimento = new AbastecimentoModel();
             Button btnExcluir = findViewById(R.id.btnExcluir);
             btnExcluir.setVisibility(View.INVISIBLE);
         }else{
-            abastecimento = AbastecimentoDAO.obterInstancia().obterObjetoPeloId(idDoAbastecimento);
+            objetoAbastecimento = AbastecimentoDAO.obterInstancia().obterObjetoPeloId(idDoAbastecimento);
 
             atualizaFotografiaNaTela();
 
-            editKm.setText(String.valueOf(abastecimento.getKmAtual()));
-            editLitros.setText(String.valueOf(abastecimento.getLitrosAbastecidos()));
+            editKm.setText(String.valueOf(objetoAbastecimento.getKmAtual()));
+            editLitros.setText(String.valueOf(objetoAbastecimento.getLitrosAbastecidos()));
 
 
             for(int i = 0; i < postos.getAdapter().getCount(); i++){
-                    if (postos.getAdapter().getItem(i).equals(abastecimento.getPosto())){
-                        postos.setSelection(i);
-                        break;
-                    }
+                if (postos.getAdapter().getItem(i).equals(objetoAbastecimento.getPosto())){
+                    postos.setSelection(i);
+                    break;
+                }
             }
 
             DateFormat formatador = android.text.format.DateFormat.getDateFormat(getApplicationContext());
-            String dataSelecionadaFormatada = formatador.format(abastecimento.getData().getTime());
-            editData.setText(dataSelecionadaFormatada);
+            String dataSelecionadaFormatada = formatador.format(objetoAbastecimento.getData().getTime());
+            etData.setText(dataSelecionadaFormatada);
         }
 
     }
 
     public void salvar(View v){
-        abastecimento.setKmAtual(Double.parseDouble(editKm.getText().toString()));
-        abastecimento.setLitrosAbastecidos(Double.parseDouble(editLitros.getText().toString()));
-        abastecimento.setPosto(postos.getSelectedItem().toString());
+        objetoAbastecimento.setKmAtual(Double.parseDouble(editKm.getText().toString()));
+        objetoAbastecimento.setLitrosAbastecidos(Double.parseDouble(editLitros.getText().toString()));
+        objetoAbastecimento.setPosto(postos.getSelectedItem().toString());
 
         if(idDoAbastecimento == null) {
-            AbastecimentoDAO.obterInstancia().addNaLista(abastecimento);
+            AbastecimentoDAO.obterInstancia().addNaLista(objetoAbastecimento);
             setResult(201);
         }else{
-            int posicaoDoObjeto = AbastecimentoDAO.obterInstancia().atualizaNaLista(abastecimento);
+            int posicaoDoObjeto = AbastecimentoDAO.obterInstancia().atualizaNaLista(objetoAbastecimento);
             Intent intencaoDeFechamentoDaActivityFormulario = new Intent();
             intencaoDeFechamentoDaActivityFormulario.putExtra("posicaoDoObjetoEditado", posicaoDoObjeto);
             setResult(200, intencaoDeFechamentoDaActivityFormulario);
         }
         finish();
-
     }
 
     public void selecionarData(View v){
-        Calendar dataPadrao = abastecimento.getData();;
+        Calendar dataPadrao = objetoAbastecimento.getData();;
         if(dataPadrao == null){
             dataPadrao = Calendar.getInstance();
         }
@@ -118,11 +122,11 @@ public class Abastecimento extends AppCompatActivity {
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         Calendar dataSelecionada = Calendar.getInstance();
                         dataSelecionada.set(year,month,dayOfMonth);
-                        abastecimento.setData(dataSelecionada);
+                        objetoAbastecimento.setData(dataSelecionada);
 
                         DateFormat formatador = android.text.format.DateFormat.getDateFormat( getApplicationContext() );
                         String dataSelecionadaFormatada = formatador.format( dataSelecionada.getTime() );
-                        editData.setText( dataSelecionadaFormatada );
+                        etData.setText( dataSelecionadaFormatada );
                     }
                 },
                 dataPadrao.get(Calendar.YEAR),
@@ -132,7 +136,7 @@ public class Abastecimento extends AppCompatActivity {
         dialogoParaPegarData.show();
     }
 
-    public void excluir(View v){
+    public void excluir(){
         new AlertDialog.Builder(this)
                 .setTitle("Você tem certeza?")
                 .setMessage("Você quer mesmo excluir?")
@@ -140,7 +144,7 @@ public class Abastecimento extends AppCompatActivity {
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        int posicaoDoObjeto = AbastecimentoDAO.obterInstancia().excluiDaLista(abastecimento);
+                        int posicaoDoObjeto = AbastecimentoDAO.obterInstancia().excluiDaLista(objetoAbastecimento);
                         Intent intencaoDeFechamentoDaActivityFormulario = new Intent();
                         intencaoDeFechamentoDaActivityFormulario.putExtra("posicaoDoObjetoExcluido", posicaoDoObjeto);
                         setResult(202, intencaoDeFechamentoDaActivityFormulario);
@@ -154,30 +158,44 @@ public class Abastecimento extends AppCompatActivity {
     String caminhoDaFoto = null;
 
     private File criarArquivoParaSalvarFoto() throws IOException {
-        String nomeDaFoto = UUID.randomUUID().toString();
-
+        String nomeFoto = UUID.randomUUID().toString();
+        //getExternalStoragePublicDirectory()
+        //    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
         File diretorio = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File fotografia = File.createTempFile(nomeDaFoto, ".jpg", diretorio);
+        File fotografia = File.createTempFile(nomeFoto,".jpg",diretorio);
         caminhoDaFoto = fotografia.getAbsolutePath();
         return fotografia;
     }
 
-    public void abrirCamera (View v){
-        Intent intencaoAbrirCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+    public void abrirCamera(View v){
+        Intent intecaoAbrirCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         File arquivoDaFoto = null;
-        try{
+        try {
             arquivoDaFoto = criarArquivoParaSalvarFoto();
-        }catch (IOException ex){
+        } catch (IOException ex) {
             Toast.makeText(this, "Não foi possível criar arquivo para foto", Toast.LENGTH_LONG).show();
         }
-
-        if(arquivoDaFoto != null){
-            Uri fotoURI = FileProvider.getUriForFile(this, "com.bryandantas.abastecimento.fileprovider", arquivoDaFoto);
-            intencaoAbrirCamera.putExtra(MediaStore.EXTRA_OUTPUT, fotoURI);
-            startActivityForResult(intencaoAbrirCamera, 1);
+        if (arquivoDaFoto != null) {
+            Uri fotoURI = FileProvider.getUriForFile(this,
+                    "com.example.a02_listas.fileprovider",
+                    arquivoDaFoto);
+            intecaoAbrirCamera.putExtra(MediaStore.EXTRA_OUTPUT, fotoURI);
+            startActivityForResult(intecaoAbrirCamera, 1);
         }
+
     }
+
+
+// avisar o SO para atualizar o índice da galeria
+//    private void galleryAddPic() {
+//        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//        File f = new File(currentPhotoPath);
+//        Uri contentUri = Uri.fromFile(f);
+//        mediaScanIntent.setData(contentUri);
+//        this.sendBroadcast(mediaScanIntent);
+//    }
 
 
     @Override
@@ -189,19 +207,17 @@ public class Abastecimento extends AppCompatActivity {
 //                Bundle extras = data.getExtras();
 //                Bitmap bitmapaFoto = (Bitmap) extras.get("data");
 
-                abastecimento.setCaminhoDaFotografia( caminhoDaFoto );
+                objetoAbastecimento.setCaminhoDaFotografia( caminhoDaFoto );
                 atualizaFotografiaNaTela();
 
             }
         }
     }
 
-    private void atualizaFotografiaNaTela() {
-        if(abastecimento.getCaminhoDaFotografia() != null){
-            ImageView ivFotografia = findViewById(R.id.ivFotografia);
-            ivFotografia.setImageURI(Uri.parse(abastecimento.getCaminhoDaFotografia()));
+    private void atualizaFotografiaNaTela(){
+        if(objetoAbastecimento.getCaminhoDaFotografia() != null){
+            ImageView ivFotografia = findViewById(R.id.btnFoto);
+            ivFotografia.setImageURI(Uri.parse(objetoAbastecimento.getCaminhoDaFotografia()));
         }
     }
-
-
 }

@@ -23,18 +23,10 @@ public class AbastecimentoModel extends RealmObject {
     @Ignore
     private Calendar data;
 
-    public AbastecimentoModel() {
-        id = UUID.randomUUID().toString();
-
-
-    }
+    public AbastecimentoModel() { id = UUID.randomUUID().toString();}
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public double getKmAtual() {

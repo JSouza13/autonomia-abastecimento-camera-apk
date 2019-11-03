@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">Abastecimento</string>
+    <string name="quilometragem_atual">Quilometragem Atual</string>
+    <string name="litros_abastecidos">Litros Abastecidos</string>
+    <string name="tirar_foto">Tirar Foto</string>
+    <string name="data">Data</string>
+    <string name="excluir">Excluir</string>
 
     <string-array name="opcoes_posto">
         <item>Texaco</item>

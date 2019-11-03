@@ -48,8 +48,6 @@ public class AbastecimentoViewHolder extends RecyclerView.ViewHolder {
 
         idDoAbastecimento = abastecimento.getId();
 
-        data.setText("25/05/2018");
-
         DateFormat formatador = android.text.format.DateFormat.getDateFormat(data.getContext());
         String dataFormatada = formatador.format(abastecimento.getData().getTime());
         data.setText(dataFormatada);
@@ -75,10 +73,5 @@ public class AbastecimentoViewHolder extends RecyclerView.ViewHolder {
         }else{
             img.setImageResource(R.mipmap.ic_outros);
         }
-
-
-
     }
-
-
 }
