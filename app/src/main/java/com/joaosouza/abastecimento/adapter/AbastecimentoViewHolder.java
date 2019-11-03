@@ -38,6 +38,7 @@ public class AbastecimentoViewHolder extends RecyclerView.ViewHolder {
             }
         });
 
+
         data = itemView.findViewById(R.id.textData);
         info = itemView.findViewById(R.id.textInfo);
         img = itemView.findViewById(R.id.imageView);
@@ -48,8 +49,10 @@ public class AbastecimentoViewHolder extends RecyclerView.ViewHolder {
 
         idDoAbastecimento = abastecimento.getId();
 
-        DateFormat formatador = android.text.format.DateFormat.getDateFormat(data.getContext());
-        String dataFormatada = formatador.format(abastecimento.getData().getTime());
+        info.setText( "Abastecidos " + abastecimento.getLitrosAbastecidos() + " litros, Km veículo " + abastecimento.getKmAtual() );
+
+        DateFormat formatador = android.text.format.DateFormat.getDateFormat( info.getContext() );
+        String dataFormatada = formatador.format( abastecimento.getData().getTime() );
         data.setText(dataFormatada);
 
         String valorAbastecido = String.valueOf(abastecimento.getLitrosAbastecidos());
